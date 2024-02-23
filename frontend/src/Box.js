@@ -1,9 +1,20 @@
 import { useState } from "react";
 import "./Box.css";
 import api from "./api";
-function Box({ title, description }) {
+function Box({ title, description, comparrayr, setcomparray }) {
   const [titlee, setTitle] = useState(title);
   const [descriptione, setDescription] = useState(description);
+
+  const deleteRecord = async function (title, description) {
+    if (description == null) {
+      return;
+    }
+    try {
+      const message = await api.delete(`/delete/${title}/${description}`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const titleChange = (event) => {
     setTitle(event.target.value);
@@ -13,27 +24,39 @@ function Box({ title, description }) {
     setDescription(event.target.value);
   };
 
-  function save(event) {
-    const title = titlee;
-    const description = descriptione;
-    console.log(title);
-    if (description === "") {
+  function save() {
+    if (descriptione == null) {
       return;
     }
+
+    if (
+      (title !== titlee || description !== descriptione) &&
+      (title != null || description != null)
+    ) {
+      console.log(title, description);
+      deleteRecord();
+      return;
+    }
+
+   
 
     const save_notes = async function () {
       try {
         const response = await api.post("/notes", {
-          title: title,
-          description: description,
+          title: titlee,
+          description: descriptione,
         });
-        console.log(response.data);
+        
       } catch (error) {
         console.log(error);
       }
     };
 
     save_notes();
+  }
+
+  function delete_note() {
+    deleteRecord(title, description);
   }
 
   return (
@@ -62,7 +85,9 @@ function Box({ title, description }) {
       <button id="button1" onClick={save}>
         Save
       </button>
-      <button id="button2">Delete</button>
+      <button id="button2" onClick={delete_note}>
+        Delete
+      </button>
       <hr></hr>
     </div>
   );

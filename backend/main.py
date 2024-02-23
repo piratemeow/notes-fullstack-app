@@ -5,6 +5,7 @@ import models
 from database import engine,SessionLocal
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import and_
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
@@ -55,3 +56,15 @@ async def post_note(note:notes, db:db_dependency):
     db.commit()
     return {"response":"successfully done"}
 
+@app.delete("/delete/{title}/{description}")
+
+async def delete_note(title : str, description: str, db:db_dependency):
+    
+    db_record = db.query(models.Sticks).filter(and_(models.Sticks.title==title, models.Sticks.description==description)).first()
+    if db_record is None:
+        raise HTTPException
+    db.delete(db_record)
+    db.commit()
+    return {"response":"successfully done"}
+
+    

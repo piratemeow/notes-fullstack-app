@@ -11,7 +11,7 @@ function App() {
     const func = async () => {
       try {
         const message = await api.get("/message");
-        console.log(message.data.length);
+        console.log(message.data);
         const components = message.data.map((item, index) => (
           <Box title={item.title} description={item.description} key={index} />
         ));
@@ -26,7 +26,7 @@ function App() {
 
   return (
     <div className="App">
-      <Box />
+      <Box comparrayr={comparray} setcomparray={setComparray} />
       {/* <Box/> */}
       {comparray}
     </div>
